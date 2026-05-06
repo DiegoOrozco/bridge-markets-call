@@ -13,6 +13,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   const [watermarkPos, setWatermarkPos] = useState({ top: '20%', left: '20%' });
   const [started, setStarted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Poll de sesión cada 5 segundos
   useEffect(() => {
