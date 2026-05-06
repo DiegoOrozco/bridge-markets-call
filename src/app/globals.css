@@ -192,6 +192,29 @@ button:disabled {
 }
 
 /* CONTENEDOR DEL VIDEO */
+.player-wrapper.pseudo-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: black;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+
+.pseudo-fullscreen .video-container {
+  height: 100vh;
+  border-radius: 0;
+}
+
+.pseudo-fullscreen .player-header {
+  display: none; /* Esconde el header en modo full */
+}
+
+
 .video-container {
   position: relative;
   width: 100%;

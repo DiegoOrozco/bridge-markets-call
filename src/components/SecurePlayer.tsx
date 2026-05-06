@@ -12,10 +12,11 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   const [user, setUser] = useState<{ name: string; ip: string | null } | null>(null);
   const [watermarkPos, setWatermarkPos] = useState({ top: '20%', left: '20%' });
   const [started, setStarted] = useState(false);
+  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Poll de sesión cada 5 segundos
+  // Poll de sesión cada 20 segundos
   useEffect(() => {
     let isMounted = true;
     
@@ -29,7 +30,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     };
 
     verify();
-    const interval = setInterval(verify, 20000); // Verificación cada 20 segundos
+    const interval = setInterval(verify, 20000);
     return () => {
       isMounted = false;
       clearInterval(interval);
@@ -53,7 +54,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   };
 
   const toggleMute = () => {
-    // Intenta desmutear vía postMessage (requiere enablejsapi=1)
     if (iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage(JSON.stringify({
         event: 'command',
@@ -67,12 +67,25 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   };
 
   const handleFullscreen = () => {
-    if (containerRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
+    const elem = containerRef.current as any;
+    if (!elem) return;
+
+    if (elem.requestFullscreen) {
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen().catch(() => setIsPseudoFullscreen(!isPseudoFullscreen));
       } else {
-        containerRef.current.requestFullscreen();
+        document.exitFullscreen();
+        setIsPseudoFullscreen(false);
       }
+    } else if (elem.webkitRequestFullscreen) {
+      if (!(document as any).webkitFullscreenElement) {
+        elem.webkitRequestFullscreen();
+      } else {
+        (document as any).webkitExitFullscreen();
+        setIsPseudoFullscreen(false);
+      }
+    } else {
+      setIsPseudoFullscreen(!isPseudoFullscreen);
     }
   };
 
@@ -84,7 +97,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   if (!user) return <div className="loader">Cargando Búnker...</div>;
 
   return (
-    <div className="player-wrapper">
+    <div className={`player-wrapper ${isPseudoFullscreen ? 'pseudo-fullscreen' : ''}`}>
       <div className="player-header">
         <h1>Transmisión Segura</h1>
         <button className="btn-logout" onClick={handleLogout}>
@@ -106,11 +119,9 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           </div>
         )}
 
-        {/* Capas Fantasma para bloquear clics hacia YouTube */}
         <div className="ghost-layer top-layer"></div>
         <div className="ghost-layer bottom-layer"></div>
 
-        {/* Marca de Agua Dinámica */}
         <div 
           className="watermark"
           style={{ top: watermarkPos.top, left: watermarkPos.left }}
@@ -118,7 +129,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           {user.name} - {user.ip}
         </div>
 
-        {/* Iframe de YouTube (Siempre cargado para evitar lag en móvil) */}
         <iframe 
           ref={iframeRef}
           className="youtube-iframe"
@@ -128,7 +138,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           allow="autoplay; encrypted-media" 
         ></iframe>
 
-        {/* Controles Custom (Superpuestos) */}
         <div className="custom-controls">
           {started && (
             <button className="control-btn" onClick={toggleMute} title="Activar Sonido">
