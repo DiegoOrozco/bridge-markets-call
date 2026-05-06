@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { checkSession } from '@/actions/auth';
+import { getVideoSettings } from '@/actions/admin';
 import SecurePlayer from '@/components/SecurePlayer';
 import LoginForm from '@/components/LoginForm';
 
@@ -14,6 +15,7 @@ export default async function Home() {
 
   // Verifica con la base de datos si la sesión es la última válida
   const session = await checkSession();
+  const settings = await getVideoSettings();
   
   if (!session.valid) {
     return <LoginForm />;
@@ -21,8 +23,7 @@ export default async function Home() {
 
   return (
     <main className="main-container">
-      <SecurePlayer videoId="So-TGaSbncA" /> 
-      {/* Cambia el videoId por el de tu transmisión real */}
+      <SecurePlayer videoId={settings.videoId} /> 
     </main>
   );
 }
