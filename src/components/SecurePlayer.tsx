@@ -93,7 +93,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
         {/* Iframe de YouTube (Oculto de búsquedas) */}
         <iframe 
           className="youtube-iframe"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0`}
           frameBorder="0" 
           allow="autoplay; encrypted-media" 
         ></iframe>
@@ -105,6 +105,9 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           </button>
         </div>
       </div>
+      <p style={{ textAlign: 'center', color: '#666', fontSize: '0.8rem', marginTop: '10px' }}>
+        * Si no escuchas nada, toca el video para activar el audio (Restricción de navegadores).
+      </p>
     </div>
   );
 }
