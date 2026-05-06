@@ -210,14 +210,13 @@ button:disabled {
   border: none;
 }
 
-/* IFRAME */
+/* IFRAME - Recortado para esconder UI de YouTube */
 .youtube-iframe {
   position: absolute;
-  top: 0;
+  top: -65px; /* Recorta la barra superior */
   left: 0;
   width: 100%;
-  height: 100%;
-  /* Deshabilita clics en todo el iframe, protegiendo links y logo de youtube */
+  height: calc(100% + 130px); /* Compensa el recorte arriba y abajo */
   pointer-events: none; 
 }
 
@@ -304,8 +303,47 @@ button:disabled {
   100% { transform: scale(0.95); opacity: 0.8; }
 }
 
-.loader {
-  color: #fff;
-  font-size: 1.2rem;
-  animation: pulse 1.5s infinite;
+/* OVERLAY DE INICIO */
+.start-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.start-overlay:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.start-btn {
+  background: var(--primary);
+  color: white;
+  padding: 1.5rem 3rem;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  border: none;
+}
+
+.start-btn:hover {
+  transform: scale(1.05);
+  background: var(--primary-hover);
+}
+
+.start-btn span {
+  font-size: 0.9rem;
+}
+

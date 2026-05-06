@@ -11,6 +11,7 @@ interface SecurePlayerProps {
 export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   const [user, setUser] = useState<{ name: string; ip: string | null } | null>(null);
   const [watermarkPos, setWatermarkPos] = useState({ top: '20%', left: '20%' });
+  const [started, setStarted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Poll de sesión cada 5 segundos
@@ -20,7 +21,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     const verify = async () => {
       const res = await checkSession();
       if (!res.valid && isMounted) {
-        window.location.href = '/'; // Redirige al login si fue expulsado
+        window.location.href = '/'; 
       } else if (res.user && isMounted) {
         setUser(res.user);
       }
@@ -34,8 +35,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     };
   }, []);
 
-  // Movimiento de la marca de agua cada 5 minutos (300000ms)
-  // Para pruebas pondremos 10 segundos
+  // Movimiento de la marca de agua
   useEffect(() => {
     const moveWatermark = () => {
       const top = Math.floor(Math.random() * 80) + '%';
@@ -43,9 +43,13 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
       setWatermarkPos({ top, left });
     };
 
-    const interval = setInterval(moveWatermark, 10000); // 10s para ver el efecto rápido
+    const interval = setInterval(moveWatermark, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleStart = () => {
+    setStarted(true);
+  };
 
   const handleFullscreen = () => {
     if (containerRef.current) {
@@ -76,8 +80,17 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
       <div 
         ref={containerRef}
         className="video-container" 
-        onContextMenu={(e) => e.preventDefault()} // Bloquea click derecho
+        onContextMenu={(e) => e.preventDefault()} 
       >
+        {!started && (
+          <div className="start-overlay" onClick={handleStart}>
+            <button className="start-btn">
+              <Volume2 size={32} />
+              <span>ENTRAR A LA TRANSMISIÓN</span>
+            </button>
+          </div>
+        )}
+
         {/* Capas Fantasma para bloquear clics hacia YouTube */}
         <div className="ghost-layer top-layer"></div>
         <div className="ghost-layer bottom-layer"></div>
@@ -90,13 +103,15 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           {user.name} - {user.ip}
         </div>
 
-        {/* Iframe de YouTube (Oculto de búsquedas) */}
-        <iframe 
-          className="youtube-iframe"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0`}
-          frameBorder="0" 
-          allow="autoplay; encrypted-media" 
-        ></iframe>
+        {/* Iframe de YouTube (Recortado por CSS) */}
+        {started && (
+          <iframe 
+            className="youtube-iframe"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0`}
+            frameBorder="0" 
+            allow="autoplay; encrypted-media" 
+          ></iframe>
+        )}
 
         {/* Controles Custom (Superpuestos) */}
         <div className="custom-controls">
@@ -105,9 +120,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           </button>
         </div>
       </div>
-      <p style={{ textAlign: 'center', color: '#666', fontSize: '0.8rem', marginTop: '10px' }}>
-        * Si no escuchas nada, toca el video para activar el audio (Restricción de navegadores).
-      </p>
     </div>
   );
 }
