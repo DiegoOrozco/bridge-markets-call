@@ -28,7 +28,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     };
 
     verify();
-    const interval = setInterval(verify, 5000);
+    const interval = setInterval(verify, 20000); // Verificación cada 20 segundos
     return () => {
       isMounted = false;
       clearInterval(interval);
