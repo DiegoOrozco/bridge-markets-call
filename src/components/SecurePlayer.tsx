@@ -51,6 +51,20 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     setStarted(true);
   };
 
+  const toggleMute = () => {
+    // Intenta desmutear vía postMessage (requiere enablejsapi=1)
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(JSON.stringify({
+        event: 'command',
+        func: 'unMute'
+      }), '*');
+      iframeRef.current.contentWindow.postMessage(JSON.stringify({
+        event: 'command',
+        func: 'playVideo'
+      }), '*');
+    }
+  };
+
   const handleFullscreen = () => {
     if (containerRef.current) {
       if (document.fullscreenElement) {
@@ -103,18 +117,23 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
           {user.name} - {user.ip}
         </div>
 
-        {/* Iframe de YouTube (Recortado por CSS) */}
-        {started && (
-          <iframe 
-            className="youtube-iframe"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0`}
-            frameBorder="0" 
-            allow="autoplay; encrypted-media" 
-          ></iframe>
-        )}
+        {/* Iframe de YouTube (Siempre cargado para evitar lag en móvil) */}
+        <iframe 
+          ref={iframeRef}
+          className="youtube-iframe"
+          style={{ opacity: started ? 1 : 0 }}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0&enablejsapi=1`}
+          frameBorder="0" 
+          allow="autoplay; encrypted-media" 
+        ></iframe>
 
         {/* Controles Custom (Superpuestos) */}
         <div className="custom-controls">
+          {started && (
+            <button className="control-btn" onClick={toggleMute} title="Activar Sonido">
+              <Volume2 size={24} />
+            </button>
+          )}
           <button className="control-btn" onClick={handleFullscreen} title="Pantalla Completa">
             <Maximize size={24} />
           </button>
