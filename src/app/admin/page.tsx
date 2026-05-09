@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [videoId, setVideoId] = useState('');
   const [users, setUsers] = useState<any[]>([]);
   const [newName, setNewName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const [newCode, setNewCode] = useState('');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -42,12 +43,13 @@ export default function AdminDashboard() {
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await createAccessCode(newName, newCode);
+    const res = await createAccessCode(newName, newEmail, newCode);
     if (res.success) {
       setNewName('');
+      setNewEmail('');
       setNewCode('');
       loadData();
-      setMessage(`Usuario creado con código: ${res.code}`);
+      setMessage(`Usuario creado y correo enviado. Código: ${res.code}`);
     } else {
       setMessage(res.error || 'Error');
     }
@@ -109,6 +111,16 @@ export default function AdminDashboard() {
                 value={newName} 
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="Ej: Juan Perez"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Correo Electrónico</label>
+              <input 
+                type="email" 
+                value={newEmail} 
+                onChange={(e) => setNewEmail(e.target.value)}
+                placeholder="Ej: juan@gmail.com"
                 required
               />
             </div>
