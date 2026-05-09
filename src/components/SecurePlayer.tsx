@@ -10,7 +10,6 @@ interface SecurePlayerProps {
 
 export default function SecurePlayer({ videoId }: SecurePlayerProps) {
   const [user, setUser] = useState<{ name: string; ip: string | null } | null>(null);
-  const [watermarkPos, setWatermarkPos] = useState({ top: '20%', left: '20%' });
   const [started, setStarted] = useState(false);
   const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,18 +34,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []);
-
-  // Movimiento de la marca de agua
-  useEffect(() => {
-    const moveWatermark = () => {
-      const top = Math.floor(Math.random() * 80) + '%';
-      const left = Math.floor(Math.random() * 70) + '%';
-      setWatermarkPos({ top, left });
-    };
-
-    const interval = setInterval(moveWatermark, 10000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleStart = () => {
@@ -121,13 +108,6 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
 
         <div className="ghost-layer top-layer"></div>
         <div className="ghost-layer bottom-layer"></div>
-
-        <div 
-          className="watermark"
-          style={{ top: watermarkPos.top, left: watermarkPos.left }}
-        >
-          {user.name} - {user.ip}
-        </div>
 
         <iframe 
           ref={iframeRef}

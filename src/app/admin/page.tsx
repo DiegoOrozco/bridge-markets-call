@@ -31,6 +31,15 @@ export default function AdminDashboard() {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  const generateCode = () => {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 7; i++) {
+      code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setNewCode(code);
+  };
+
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await createAccessCode(newName, newCode);
@@ -38,11 +47,11 @@ export default function AdminDashboard() {
       setNewName('');
       setNewCode('');
       loadData();
-      setMessage('Usuario creado');
+      setMessage(`Usuario creado con código: ${res.code}`);
     } else {
       setMessage(res.error || 'Error');
     }
-    setTimeout(() => setMessage(''), 3000);
+    setTimeout(() => setMessage(''), 5000);
   };
 
   const handleDeleteUser = async (id: string) => {
@@ -105,13 +114,18 @@ export default function AdminDashboard() {
             </div>
             <div className="form-group">
               <label>Código de Acceso</label>
-              <input 
-                type="text" 
-                value={newCode} 
-                onChange={(e) => setNewCode(e.target.value)}
-                placeholder="Ej: VIP2024"
-                required
-              />
+              <div className="input-with-btn">
+                <input 
+                  type="text" 
+                  value={newCode} 
+                  onChange={(e) => setNewCode(e.target.value)}
+                  placeholder="Ej: AB12345"
+                  required
+                />
+                <button type="button" className="btn-secondary" onClick={generateCode} title="Generar código aleatorio">
+                  Random
+                </button>
+              </div>
             </div>
             <button type="submit" className="btn-primary full-width">
               Crear Usuario
