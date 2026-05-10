@@ -76,11 +76,6 @@ export async function createAccessCode(name: string, email: string, accessCode?:
                 <h2 style="margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold;">${finalCode}</h2>
               </div>
 
-              <p style="color: #2d3748; font-style: italic; font-size: 15px; margin-bottom: 35px;">
-                "El éxito no es el final, el fracaso no es fatal: lo que cuenta es el valor para continuar." <br>
-                <strong>¡Nos vemos en la cima!</strong>
-              </p>
-
               <a href="https://bunker.bridgemarkets.com" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
                 Acceder a la Transmisión
               </a>
@@ -88,8 +83,7 @@ export async function createAccessCode(name: string, email: string, accessCode?:
 
             <div style="background-color: #f7fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
               <p style="font-size: 12px; color: #a0aec0; margin: 0;">
-                Este es un acceso privado y único para ti. <br>
-                Bridge Markets © 2024 - Costa Rica
+                Este es un acceso privado y único para ti.
               </p>
             </div>
           </div>
