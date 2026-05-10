@@ -72,11 +72,11 @@ export async function createAccessCode(name: string, email: string, accessCode?:
               </p>
 
               <div style="background: linear-gradient(135deg, #1a365d 0%, #2a4365 100%); padding: 30px; border-radius: 12px; margin: 30px 0; color: white;">
-                <p style="margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Tu Código de Acceso Exclusivo</p>
-                <h2 style="margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold;">${finalCode}</h2>
+                <p style="margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; color: #ffffff;">Tu Código de Acceso Exclusivo</p>
+                <h2 style="margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold; color: #ffffff;">${finalCode}</h2>
               </div>
 
-              <a href="https://bridge-markets-call.vercel.app/" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
+              <a href="https://bridge-markets-call.vercel.app/?code=${finalCode}" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
                 Acceder a la Transmisión
               </a>
             </div>
