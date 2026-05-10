@@ -81,7 +81,7 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
     window.location.href = '/';
   };
 
-  if (!user) return <div className="loader">Cargando Búnker...</div>;
+  if (!user) return <div className="loader">Cargando acceso...</div>;
 
   return (
     <div className={`player-wrapper ${isPseudoFullscreen ? 'pseudo-fullscreen' : ''}`}>
