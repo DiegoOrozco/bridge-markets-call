@@ -76,7 +76,7 @@ export async function createAccessCode(name: string, email: string, accessCode?:
                 <h2 style="margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold;">${finalCode}</h2>
               </div>
 
-              <a href="https://bunker.bridgemarkets.com" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
+              <a href="https://bridge-markets-call.vercel.app/" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
                 Acceder a la Transmisión
               </a>
             </div>
