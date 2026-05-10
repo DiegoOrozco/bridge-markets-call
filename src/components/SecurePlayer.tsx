@@ -97,37 +97,50 @@ export default function SecurePlayer({ videoId }: SecurePlayerProps) {
         className="video-container" 
         onContextMenu={(e) => e.preventDefault()} 
       >
-        {!started && (
-          <div className="start-overlay" onClick={handleStart}>
-            <button className="start-btn">
-              <Volume2 size={32} />
-              <span>ENTRAR A LA TRANSMISIÓN</span>
-            </button>
+        {!videoId || videoId.trim() === '' ? (
+          <div className="no-video-placeholder">
+            <div className="placeholder-content">
+              <div className="live-badge">PRÓXIMAMENTE</div>
+              <h2>Conferencia de Apertura</h2>
+              <p>La transmisión empezará el día 10 de mayo a las 3:00pm</p>
+              <div className="pulse-circle"></div>
+            </div>
           </div>
+        ) : (
+          <>
+            {!started && (
+              <div className="start-overlay" onClick={handleStart}>
+                <button className="start-btn">
+                  <Volume2 size={32} />
+                  <span>ENTRAR A LA TRANSMISIÓN</span>
+                </button>
+              </div>
+            )}
+
+            <div className="ghost-layer top-layer"></div>
+            <div className="ghost-layer bottom-layer"></div>
+
+            <iframe 
+              ref={iframeRef}
+              className="youtube-iframe"
+              style={{ opacity: started ? 1 : 0 }}
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0&enablejsapi=1&playsinline=1`}
+              frameBorder="0" 
+              allow="autoplay; encrypted-media" 
+            ></iframe>
+
+            <div className="custom-controls">
+              {started && (
+                <button className="control-btn" onClick={toggleMute} title="Activar Sonido">
+                  <Volume2 size={24} />
+                </button>
+              )}
+              <button className="control-btn" onClick={handleFullscreen} title="Pantalla Completa">
+                <Maximize size={24} />
+              </button>
+            </div>
+          </>
         )}
-
-        <div className="ghost-layer top-layer"></div>
-        <div className="ghost-layer bottom-layer"></div>
-
-        <iframe 
-          ref={iframeRef}
-          className="youtube-iframe"
-          style={{ opacity: started ? 1 : 0 }}
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0&enablejsapi=1&playsinline=1`}
-          frameBorder="0" 
-          allow="autoplay; encrypted-media" 
-        ></iframe>
-
-        <div className="custom-controls">
-          {started && (
-            <button className="control-btn" onClick={toggleMute} title="Activar Sonido">
-              <Volume2 size={24} />
-            </button>
-          )}
-          <button className="control-btn" onClick={handleFullscreen} title="Pantalla Completa">
-            <Maximize size={24} />
-          </button>
-        </div>
       </div>
     </div>
   );
