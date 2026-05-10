@@ -50,28 +50,55 @@ export async function createAccessCode(name: string, email: string, accessCode?:
 
     // Enviar correo de bienvenida
     try {
+      const path = await import('path');
+      const logoPath = path.join(process.cwd(), 'public', 'logo.jpg');
+      
       await sendEmail({
         to: email,
-        subject: "Tu acceso al Búnker Digital - Bridge Markets",
-        text: `Hola ${name}, tu código de acceso al Búnker Digital es: ${finalCode}`,
+        subject: "Bienvenido a la Conferencia Apertura - Bridge Markets Costa Rica",
+        text: `Hola ${name}, tu acceso para la conferencia de Bridge Markets es: ${finalCode}`,
         html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #2563eb; text-align: center;">¡Bienvenido al Búnker Digital!</h2>
-            <p>Hola <strong>${name}</strong>,</p>
-            <p>Se te ha otorgado acceso a la plataforma de streaming exclusivo de Bridge Markets.</p>
-            <div style="background: #f3f4f6; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 0; font-size: 14px; color: #6b7280;">Tu código de acceso es:</p>
-              <h1 style="margin: 10px 0; letter-spacing: 5px; color: #111827;">${finalCode}</h1>
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background-color: #ffffff;">
+            <div style="background-color: #000; text-align: center; padding: 0;">
+              <img src="cid:logo" alt="Bridge Markets Logo" style="width: 100%; max-width: 600px; display: block;">
             </div>
-            <p style="text-align: center;">
-              <a href="https://bunker.bridgemarkets.com" style="background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Entrar al Búnker</a>
-            </p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-            <p style="font-size: 12px; color: #9ca3af; text-align: center;">
-              Si tienes problemas para entrar, contacta con soporte.
-            </p>
+            
+            <div style="padding: 40px 30px; text-align: center;">
+              <h1 style="color: #1a202c; margin-bottom: 20px; font-size: 24px;">¡Hola, ${name}!</h1>
+              
+              <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                Es un honor darte la bienvenida a este momento histórico: la <strong>Conferencia de Apertura de Bridge Markets en Costa Rica</strong>. 
+                Estamos construyendo el puente hacia tu futuro financiero y nos emociona que seas parte de esta visión.
+              </p>
+
+              <div style="background: linear-gradient(135deg, #1a365d 0%, #2a4365 100%); padding: 30px; border-radius: 12px; margin: 30px 0; color: white;">
+                <p style="margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Tu Código de Acceso Exclusivo</p>
+                <h2 style="margin: 0; font-size: 36px; letter-spacing: 8px; font-weight: bold;">${finalCode}</h2>
+              </div>
+
+              <p style="color: #2d3748; font-style: italic; font-size: 15px; margin-bottom: 35px;">
+                "El éxito no es el final, el fracaso no es fatal: lo que cuenta es el valor para continuar." <br>
+                <strong>¡Nos vemos en la cima!</strong>
+              </p>
+
+              <a href="https://bunker.bridgemarkets.com" style="background-color: #2b6cb0; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">
+                Acceder a la Transmisión
+              </a>
+            </div>
+
+            <div style="background-color: #f7fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+              <p style="font-size: 12px; color: #a0aec0; margin: 0;">
+                Este es un acceso privado y único para ti. <br>
+                Bridge Markets © 2024 - Costa Rica
+              </p>
+            </div>
           </div>
-        `
+        `,
+        attachments: [{
+          filename: 'logo.jpg',
+          path: logoPath,
+          cid: 'logo'
+        }]
       });
     } catch (mailError) {
       console.error("Error al enviar el correo:", mailError);

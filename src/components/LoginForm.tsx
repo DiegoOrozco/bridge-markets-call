@@ -31,7 +31,7 @@ export default function LoginForm() {
           <Lock size={32} />
         </div>
         <h2>Acceso Restringido</h2>
-        <p>Búnker Digital - Bridge Markets</p>
+        <p>Bridge Markets Exclusive Access</p>
 
         <form onSubmit={handleSubmit}>
           <input 

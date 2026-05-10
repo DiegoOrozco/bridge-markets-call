@@ -68,7 +68,7 @@ export default function AdminDashboard() {
   return (
     <div className="admin-container">
       <header className="admin-header">
-        <Link href="/" className="back-link"><ArrowLeft size={20} /> Volver al Búnker</Link>
+        <Link href="/" className="back-link"><ArrowLeft size={20} /> Volver a Bridge Markets</Link>
         <h1>Panel de Control</h1>
         {message && <div className="admin-toast">{message}</div>}
       </header>
