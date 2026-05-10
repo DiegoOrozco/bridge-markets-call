@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 
-export async function sendEmail({ to, subject, text, html }: { to: string; subject: string; text: string; html: string }) {
+export async function sendEmail({ to, subject, text, html }: { to: string; subject: string; text?: string; html: string }) {
   if (!EMAIL_USER || !EMAIL_PASS) {
     console.error('❌ Email configuration missing (EMAIL_USER or EMAIL_PASS)');
     return;
@@ -22,7 +22,7 @@ export async function sendEmail({ to, subject, text, html }: { to: string; subje
       from: `"Búnker Digital" <${EMAIL_USER}>`,
       to,
       subject,
-      text,
+      text: text || "Tu acceso al Búnker Digital",
       html,
     });
 

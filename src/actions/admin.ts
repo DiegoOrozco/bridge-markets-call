@@ -53,6 +53,7 @@ export async function createAccessCode(name: string, email: string, accessCode?:
       await sendEmail({
         to: email,
         subject: "Tu acceso al Búnker Digital - Bridge Markets",
+        text: `Hola ${name}, tu código de acceso al Búnker Digital es: ${finalCode}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
             <h2 style="color: #2563eb; text-align: center;">¡Bienvenido al Búnker Digital!</h2>
