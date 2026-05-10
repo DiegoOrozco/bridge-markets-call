@@ -1,66 +1,35 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
-let transporter: any = null;
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
-function getTransporter() {
-    if (!transporter) {
-        const credentialsJson = process.env.GOOGLE_CREDENTIALS;
-        const emailUser = process.env.EMAIL_USER;
+export async function sendEmail({ to, subject, text, html }: { to: string; subject: string; text: string; html: string }) {
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    console.error('❌ Email configuration missing (EMAIL_USER or EMAIL_PASS)');
+    return;
+  }
 
-        if (!credentialsJson || !emailUser) {
-            console.error("[EMAIL] Missing GOOGLE_CREDENTIALS or EMAIL_USER in .env");
-            return null;
-        }
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASS,
+      },
+    });
 
-        try {
-            const credentials = JSON.parse(credentialsJson);
-            
-            transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                auth: {
-                    type: 'OAuth2',
-                    user: emailUser,
-                    serviceClient: credentials.client_id,
-                    privateKey: credentials.private_key,
-                }
-            } as any);
-        } catch (error) {
-            console.error("[EMAIL] Error initializing transporter:", error);
-            return null;
-        }
-    }
-    return transporter;
-}
+    const info = await transporter.sendMail({
+      from: `"Búnker Digital" <${EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+      html,
+    });
 
-export async function sendEmail({ 
-    to, 
-    subject, 
-    html 
-}: { 
-    to: string; 
-    subject: string; 
-    html: string; 
-}) {
-    const currentTransporter = getTransporter();
-    if (!currentTransporter) {
-        throw new Error("No se pudo configurar el servicio de correo.");
-    }
-
-    const emailUser = process.env.EMAIL_USER;
-
-    try {
-        const info = await currentTransporter.sendMail({
-            from: `"Búnker Digital" <${emailUser}>`,
-            to,
-            subject,
-            html,
-        });
-        console.log("[EMAIL] Correo enviado:", info.messageId);
-        return info;
-    } catch (error) {
-        console.error("[EMAIL] Error al enviar correo:", error);
-        throw error;
-    }
+    console.log('✅ Email sent successfully:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    throw error;
+  }
 }
