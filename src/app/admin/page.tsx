@@ -56,6 +56,63 @@ export default function AdminDashboard() {
     setTimeout(() => setMessage(''), 5000);
   };
 
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
+
+  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split('\n').filter(line => line.trim() !== '');
+      
+      // Asumimos que la primera línea es el encabezado: nombre, correo
+      const data = lines.slice(1).map(line => {
+        const parts = line.split(',').map(p => p.trim());
+        return { name: parts[0], email: parts[1] };
+      }).filter(u => u.name && u.email);
+
+      if (data.length === 0) {
+        setMessage('No se encontraron datos válidos en el CSV. Formato: nombre, correo');
+        return;
+      }
+
+      if (!confirm(`¿Deseas registrar a ${data.length} usuarios y enviar sus correos? (Se enviarán uno cada 7 segundos)`)) {
+        return;
+      }
+
+      setBulkLoading(true);
+      setProgress({ current: 0, total: data.length });
+
+      for (let i = 0; i < data.length; i++) {
+        const user = data[i];
+        setProgress(p => ({ ...p, current: i + 1 }));
+        
+        try {
+          const res = await createAccessCode(user.name, user.email);
+          if (!res.success) {
+            console.error(`Error con ${user.email}:`, res.error);
+          }
+        } catch (err) {
+          console.error(`Fallo crítico con ${user.email}:`, err);
+        }
+
+        // Esperar entre 5 y 10 segundos (7 seg promedio) para evitar spam
+        if (i < data.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 7000));
+        }
+      }
+
+      setBulkLoading(false);
+      loadData();
+      setMessage('Carga masiva completada con éxito.');
+      setTimeout(() => setMessage(''), 5000);
+    };
+    reader.readAsText(file);
+  };
+
   const handleDeleteUser = async (id: string) => {
     if (confirm('¿Borrar este acceso?')) {
       await removeUser(id);
@@ -143,6 +200,54 @@ export default function AdminDashboard() {
               Crear Usuario
             </button>
           </form>
+        </section>
+
+        {/* Carga Masiva */}
+        <section className="admin-card">
+          <div className="card-title">
+            <Users size={20} />
+            <h2>Carga Masiva (CSV)</h2>
+          </div>
+          <div className="admin-form">
+            <p className="hint" style={{ marginBottom: '15px' }}>
+              Sube un archivo .csv con columnas <strong>nombre, correo</strong>.
+            </p>
+            <div className="file-upload-container">
+              <input 
+                type="file" 
+                accept=".csv" 
+                onChange={handleCSVUpload} 
+                disabled={bulkLoading}
+                id="csv-upload"
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="csv-upload" className={`btn-secondary full-width ${bulkLoading ? 'disabled' : ''}`} style={{ cursor: bulkLoading ? 'not-allowed' : 'pointer', textAlign: 'center', display: 'block', padding: '10px' }}>
+                {bulkLoading ? 'Procesando...' : 'Seleccionar Archivo .CSV'}
+              </label>
+            </div>
+
+            {bulkLoading && (
+              <div className="bulk-progress" style={{ marginTop: '20px' }}>
+                <div className="progress-text">
+                  Procesando: {progress.current} de {progress.total}
+                </div>
+                <div className="progress-bar-bg" style={{ background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden', marginTop: '8px' }}>
+                  <div 
+                    className="progress-bar-fill" 
+                    style={{ 
+                      width: `${(progress.current / progress.total) * 100}%`, 
+                      background: '#2b6cb0', 
+                      height: '100%',
+                      transition: 'width 0.3s ease'
+                    }} 
+                  />
+                </div>
+                <p className="hint" style={{ marginTop: '10px', fontSize: '11px' }}>
+                  No cierres esta pestaña hasta terminar.
+                </p>
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Lista de Usuarios */}
